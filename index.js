@@ -31,7 +31,7 @@ exports.onStateChangedListener = (callback) => {
     return stateChanged.addListener(exports.STATE_CHANGED_EVENT_NAME, (e) => callback(e));
 };
 exports.prepare = react_native_1.NativeModules.RNIpSecVpn.prepare;
-exports.connect = (address, username, password, vpnType, mtu) => react_native_1.NativeModules.RNIpSecVpn.connect(address || "", username || "", password || "", vpnType || "", mtu || 1400);
+exports.connect = (address, username, password, notificationText, vpnType, mtu) => react_native_1.NativeModules.RNIpSecVpn.connect(address || "", username || "", password || "", notificationText || "", vpnType || "", mtu || 1400);
 exports.getCurrentState = react_native_1.NativeModules.RNIpSecVpn.getCurrentState;
 exports.getCharonErrorState = react_native_1.NativeModules.RNIpSecVpn.getCharonErrorState;
 exports.disconnect = react_native_1.NativeModules.RNIpSecVpn.disconnect;

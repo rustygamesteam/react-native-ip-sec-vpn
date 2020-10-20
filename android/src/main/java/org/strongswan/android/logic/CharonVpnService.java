@@ -142,6 +142,7 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
                     profile.setId(1);
                     profile.setUUID(UUID.randomUUID());
                     profile.setName(bundle.getString("Address"));
+                    profile.setNotificationText(bundle.getString("NotificationText"));
                     profile.setGateway(bundle.getString("Address"));
                     profile.setUsername(bundle.getString("UserName"));
                     profile.setPassword(bundle.getString("Password"));
@@ -363,11 +364,11 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
         VpnProfile profile = mService.getProfile();
         State state = mService.getState();
         ErrorState error = mService.getErrorState();
-        String name = "";
+        String notificationText = "";
         boolean add_action = false;
 
         if (profile != null) {
-            name = profile.getName();
+            notificationText = profile.getNotificationText();
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
 //                .setSmallIcon(R.drawable.ic_notification)
@@ -431,7 +432,7 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
 //                builder.addAction(R.drawable.ic_notification_disconnect, getString(R.string.disconnect), pending);
 //            }
             if (error == ErrorState.NO_ERROR) {
-                builder.setContentText(name);
+                builder.setContentText(notificationText);
             }
             builder.setPublicVersion(buildNotification(true));
         }
