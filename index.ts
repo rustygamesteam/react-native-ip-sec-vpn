@@ -60,14 +60,14 @@ export const prepare: () => Promise<void> = NativeModules.RNIpSecVpn.prepare;
 // use given credentials to connect VPN (ikev2-eap).
 // this will create a background VPN service.
 // mtu is only available on android.
-export const connect: (address: string, username: string, password: string, notificationText: string, vpnType?: string, mtu?: number) => Promise<void> = (
+export const connect: (address: string, username: string, password: string, description: string, vpnType?: string, mtu?: number) => Promise<void> = (
   address,
   username,
   password,
-  notificationText,
+  description,
   vpnType,
   mtu
-) => NativeModules.RNIpSecVpn.connect(address || "", username || "", password || "", notificationText || "", vpnType || "", mtu || 1400);
+) => NativeModules.RNIpSecVpn.connect(address || "", username || "", password || "", description || "", vpnType || "", mtu || 1400);
 
 // get current state
 export const getCurrentState: () => Promise<VpnState> = NativeModules.RNIpSecVpn.getCurrentState;

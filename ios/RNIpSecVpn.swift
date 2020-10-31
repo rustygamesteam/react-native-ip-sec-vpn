@@ -76,6 +76,13 @@ class KeychainService: NSObject {
 @objc(RNIpSecVpn)
 class RNIpSecVpn: RCTEventEmitter {
     
+    public static var shared:RNIpSecVpn?
+    
+    override init() {
+        super.init()
+        RNIpSecVpn.shared = self
+    }
+    
     @objc override static func requiresMainQueueSetup() -> Bool {
         return true
     }
@@ -86,7 +93,6 @@ class RNIpSecVpn: RCTEventEmitter {
     
     @objc
     func prepare(_ findEventsWithResolver: RCTPromiseResolveBlock, rejecter: RCTPromiseRejectBlock) -> Void {
-
         // Register to be notified of changes in the status. These notifications only work when app is in foreground.
         NotificationCenter.default.addObserver(forName: NSNotification.Name.NEVPNStatusDidChange, object : nil , queue: nil) {
             notification in let nevpnconn = notification.object as! NEVPNConnection
@@ -97,8 +103,9 @@ class RNIpSecVpn: RCTEventEmitter {
     
     @objc
     func connect(_ address: NSString, username: NSString, password: NSString, notificationText: NSString, vpnType: NSString, mtu: NSNumber, findEventsWithResolver: @escaping RCTPromiseResolveBlock, rejecter: @escaping RCTPromiseRejectBlock) -> Void {
-        let vpnManager = NEVPNManager.shared()
+        
         let kcs = KeychainService()
+        let vpnManager = NEVPNManager.shared()
 
         vpnManager.loadFromPreferences { (error) -> Void in
 
@@ -114,10 +121,21 @@ class RNIpSecVpn: RCTEventEmitter {
                 kcs.save(key: "password", value: password as String)
                 p.passwordReference = kcs.load(key: "password")
                 p.authenticationMethod = NEVPNIKEAuthenticationMethod.none
-
+                
+                p.deadPeerDetectionRate = .medium
+                p.ikeSecurityAssociationParameters.encryptionAlgorithm = .algorithmAES256GCM
+                p.ikeSecurityAssociationParameters.integrityAlgorithm = .SHA384
+                p.ikeSecurityAssociationParameters.diffieHellmanGroup = .group20
+                p.ikeSecurityAssociationParameters.lifetimeMinutes = 1440
+                p.childSecurityAssociationParameters.encryptionAlgorithm = .algorithmAES256GCM
+                p.childSecurityAssociationParameters.integrityAlgorithm = .SHA384
+                p.childSecurityAssociationParameters.diffieHellmanGroup = .group20
+                p.childSecurityAssociationParameters.lifetimeMinutes = 1440
+                
                 p.useExtendedAuthentication = true
                 p.disconnectOnSleep = false
-
+                
+                vpnManager.localizedDescription = notificationText as String
                 vpnManager.protocolConfiguration = p
                 vpnManager.isEnabled = true
                 
@@ -175,6 +193,7 @@ class RNIpSecVpn: RCTEventEmitter {
     func getCurrentState(_ findEventsWithResolver:RCTPromiseResolveBlock, rejecter:RCTPromiseRejectBlock) -> Void {
         let vpnManager = NEVPNManager.shared()
         let status = checkNEStatus(status: vpnManager.connection.status)
+        print("checkNEStatus", status.intValue)
         if(status.intValue < 5){
             findEventsWithResolver(status)
         } else {
