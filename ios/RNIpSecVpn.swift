@@ -93,6 +93,15 @@ class RNIpSecVpn: RCTEventEmitter {
     
     @objc
     func prepare(_ findEventsWithResolver: RCTPromiseResolveBlock, rejecter: RCTPromiseRejectBlock) -> Void {
+        let vpnManager = NEVPNManager.shared()
+        vpnManager.loadFromPreferences { (error) in
+            if error != nil {
+                print(error.debugDescription)
+            }
+            else{
+                print("No error from loading VPN viewDidLoad")
+            }
+        }
         // Register to be notified of changes in the status. These notifications only work when app is in foreground.
         NotificationCenter.default.addObserver(forName: NSNotification.Name.NEVPNStatusDidChange, object : nil , queue: nil) {
             notification in let nevpnconn = notification.object as! NEVPNConnection
@@ -123,14 +132,18 @@ class RNIpSecVpn: RCTEventEmitter {
                 p.authenticationMethod = NEVPNIKEAuthenticationMethod.none
                 
                 p.deadPeerDetectionRate = .medium
-                p.ikeSecurityAssociationParameters.encryptionAlgorithm = .algorithmAES256GCM
-                p.ikeSecurityAssociationParameters.integrityAlgorithm = .SHA384
-                p.ikeSecurityAssociationParameters.diffieHellmanGroup = .group20
-                p.ikeSecurityAssociationParameters.lifetimeMinutes = 1440
-                p.childSecurityAssociationParameters.encryptionAlgorithm = .algorithmAES256GCM
-                p.childSecurityAssociationParameters.integrityAlgorithm = .SHA384
-                p.childSecurityAssociationParameters.diffieHellmanGroup = .group20
-                p.childSecurityAssociationParameters.lifetimeMinutes = 1440
+                
+                let isap = p.ikeSecurityAssociationParameters
+                isap.encryptionAlgorithm = .algorithmAES256GCM
+                isap.integrityAlgorithm = .SHA384
+                isap.diffieHellmanGroup = .group20
+                isap.lifetimeMinutes = 1440
+                
+                let csap = p.childSecurityAssociationParameters
+                csap.encryptionAlgorithm = .algorithmAES256GCM
+                csap.integrityAlgorithm = .SHA384
+                csap.diffieHellmanGroup = .group20
+                csap.lifetimeMinutes = 1440
                 
                 p.useExtendedAuthentication = true
                 p.disconnectOnSleep = false
@@ -144,7 +157,8 @@ class RNIpSecVpn: RCTEventEmitter {
                 vpnManager.saveToPreferences(completionHandler: { (error) -> Void in
                     if error != nil {
                         print("VPN Preferences error: 2")
-                        rejecter("VPN_ERR", "VPN Preferences error: 2", defaultErr)
+                        rejecter("VPN_ERR", "VPN Preferences error: 2", error)
+                        return
                     } else {
                         vpnManager.loadFromPreferences(completionHandler: { error in
 
