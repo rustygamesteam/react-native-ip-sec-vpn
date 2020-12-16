@@ -3,7 +3,7 @@
   "title": "React Native Ip Sec Vpn",
   "version": "1.2.0",
   "description": "React Native IPSec VPN Module",
-  "homepage": "https://github.com/sijav/react-native-ip-sec-vpn#readme",
+  "homepage": "https://github.com/rustygamesteam/react-native-ip-sec-vpn#readme",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
@@ -21,8 +21,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sijav/react-native-ip-sec-vpn.git",
-    "baseUrl": "https://github.com/sijav/react-native-ip-sec-vpn"
+    "url": "git+https://github.com/rustygamesteam/react-native-ip-sec-vpn.git",
+    "baseUrl": "https://github.com/rustygamesteam/react-native-ip-sec-vpn"
   },
   "keywords": [
     "react-native",
@@ -32,8 +32,8 @@
     "vpn"
   ],
   "author": {
-    "name": "Sijav",
-    "email": "sinajavaheri@gmail.com"
+    "name": "elmeno",
+    "email": "alex1lmn@gmail.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
